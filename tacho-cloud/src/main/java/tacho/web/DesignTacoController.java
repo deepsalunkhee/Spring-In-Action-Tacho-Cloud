@@ -67,6 +67,10 @@ public class DesignTacoController {
 	public String processTaco(@Valid Taco taco, Errors errors, @ModelAttribute TacoOrder tacoOrder) {
 		log.info("Processing Taco:{}", taco);
 
+		tacoOrder.addTaco(taco);
+
+
+
 		if (errors.hasErrors()) {
 			return "design";
 		}
