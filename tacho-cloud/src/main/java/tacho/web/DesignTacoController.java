@@ -28,6 +28,7 @@ import tacho.models.TacoOrder;
 @SessionAttributes("tacoOrder")
 public class DesignTacoController {
 
+	@Autowired
 	private final IngredientRepository ingredientRepo;
 
 	@Autowired
@@ -38,7 +39,7 @@ public class DesignTacoController {
 
 	@ModelAttribute
 	public void addIngredientsToModel(Model model) {
-		List<Ingredient> ingredients = ingredientRepo.findAll();
+		List<Ingredient> ingredients = (List<Ingredient>) ingredientRepo.findAll();
 		Type[] types = Ingredient.Type.values();
 		for (Type type : types) {
 			model.addAttribute(type.toString().toLowerCase(),

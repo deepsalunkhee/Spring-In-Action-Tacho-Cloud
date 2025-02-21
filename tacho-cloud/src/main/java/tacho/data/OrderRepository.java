@@ -1,9 +1,11 @@
 package tacho.data;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import tacho.models.TacoOrder;
 
+@Repository
 public interface OrderRepository extends CrudRepository<TacoOrder, Long> {
-    TacoOrder save(TacoOrder order);
+
 }
