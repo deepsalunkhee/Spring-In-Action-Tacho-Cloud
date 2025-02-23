@@ -1,9 +1,12 @@
 package tacho.web;
 
+import java.util.List;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -13,7 +16,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import tacho.data.OrderRepository;
 import tacho.models.TacoOrder;
-import tacho.models.Taco;
+import tacho.models.User;
 
 @Slf4j
 @Controller
@@ -34,19 +37,26 @@ public class OrderController {
 
     @PostMapping
     public String processOrder(@Valid TacoOrder order, Errors errors,
-            SessionStatus sessionStatus) {
+            SessionStatus sessionStatus,
+            @AuthenticationPrincipal User user) {
 
         if (errors.hasErrors()) {
             return "orderForm";
         }
 
-        
-
-        log.info("Order submitted: {}", order);
+        order.setUser(user);
 
         orderRepo.save(order);
-
         sessionStatus.setComplete();
+
         return "redirect:/";
     }
+
+    @GetMapping
+	public String ordersForUser(@AuthenticationPrincipal User user, Model model) {
+		List<TacoOrder> orders = orderRepo.findByUserOrderByPlacedAtDesc(user);
+		model.addAttribute("orders", orders);
+		return "orderList";
+	}
+
 }
